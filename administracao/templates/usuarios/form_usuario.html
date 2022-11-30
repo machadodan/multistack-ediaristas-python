@@ -23,6 +23,16 @@
                         {% bootstrap_field form_usuario.password2 %}                    
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {% bootstrap_field form_usuario.first_name %}
+                    </div>
+                </div>
+                <div class="col-md-6">    
+                    <div class="form-group">
+                        {% bootstrap_field form_usuario.email %}
+                    </div>
+                </div>
             </div>
             <button class="btn btn-primary" type="submit">Salvar</button>
         </form>
