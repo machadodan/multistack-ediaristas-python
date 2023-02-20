@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
+import environ
+
+env = environ.Env()
+
+env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +26,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8kv6i9cxzoej$ct2otefhgg&l0*8d2!*)o8g4nz=8%-5q)*@$f'
+#ALTERADO POR DANIEL
+#SECRET_KEY = 'django-insecure-8kv6i9cxzoej$ct2otefhgg&l0*8d2!*)o8g4nz=8%-5q)*@$f'
+#APOS ALTERAÇÃO POR DANIEL
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#ALTERADO POR DANIEL
+#DEBUG = True
+
+#APOS ALTERAÇÃO POR DANIEL
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
+
+#libera para todas aplicacoes fazer requisicoes na api
+CORS_ALLOW_ALL_ORIGINS = True  
 
 
 # Application definition
@@ -38,13 +54,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'adminlte3',
     'bootstrap4',
+    'localflavor',
+    'api',
+    'rest_framework', #pacote instalado na parte II do curso
+    'rest_framework_simplejwt.token_blacklist'
+    
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -70,22 +93,84 @@ TEMPLATES = [
     },
 ]
 
+REST_FRAMEWORK = {
+    
+    'DEFAULT_AUTHENTICATION_CLASSES': (        
+        'rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication',
+    )    
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": False,
+
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "VERIFYING_KEY": "",
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "JSON_ENCODER": None,
+    "JWK_URL": None,
+    "LEEWAY": 0,
+
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
+
+    "JTI_CLAIM": "jti",
+
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": timedelta(seconds=30),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+
+    }
+
+
 WSGI_APPLICATION = 'ediaristas.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+#ALTERADO POR DANIEL
+
+#APOS ALTERAÇÃO POR DANIEL
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ediaristas',
-        'HOST': 'localhost',
+        #ALTERADO DANIEL
+        #'NAME': 'ediaristas',
+        'NAME': env('DATABASE_NAME'),
+        #'HOST': 'localhost',
+        'HOST': env('DATABASE_HOST'),
         'PORT': 3306,
-        'USER': 'root',
-        'PASSWORD': '123456'
+        #'USER': 'root',
+        'USER': env('DATABASE_USER'),
+        #'PASSWORD': '123456'
+        'PASSWORD': env('DATABASE_PASSWORD'),
     }
 }
+
+#configurando para envio de email por daniel
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_PORT = 587
+#EMAIL_HOST_USER = 'postmaster@sandbox871d7552a02c4e74a8a2c34b4d99f637.mailgun.org'
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+#EMAIL_HOST_PASSWORD = '58d73a8e86f526834c525fcb324f79f2-ca9eeb88-b20d2f5f'
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
+EMAIL_USE_TLS = True
 
 
 # Password validation
@@ -137,3 +222,5 @@ LOGIN_URL = 'logar_usuario'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'api.Usuario'
