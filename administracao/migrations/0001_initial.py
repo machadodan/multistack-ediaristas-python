@@ -31,6 +31,8 @@ class Migration(migrations.Migration):
                 ('valor_outros', models.FloatField()),
                 ('icone', models.CharField(choices=[('twf-cleaning-1', 'twf-cleaning-1'), ('twf-cleaning-2', 'twf-cleaning-2'), ('twf-cleaning-3', 'twf-cleaning-3')], max_length=14)),
                 ('posicao', models.IntegerField()),
+                ('valor_quintal', models.FloatField()),
+                ('horas_quintal', models.IntegerField()),
             ],
         ),
     ]

@@ -27,3 +27,13 @@ def buscar_cidade_cep(cep):
     if 'erro' in cidade_api:
         raise serializers.ValidationError({"detail": "O CEP informado não foi encontrado"})
     return cidade_api
+
+# tratando busca de cidades pelo codigo de ibge valido
+def buscar_cidade_ibge(ibge):
+    requisicao = requests.get(
+        f"https://servicodados.ibge.gov.br/api/v1/localidades/municipios/{ibge}"
+    )
+    if len(requisicao.content) == 2:
+        raise serializers.ValidationError("A cidade não existe")
+    cidade_api = json.loads(requisicao.content)
+    return cidade_api

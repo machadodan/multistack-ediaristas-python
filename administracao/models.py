@@ -18,13 +18,14 @@ class Servico(models.Model):
     valor_sala = models.DecimalField(null=False, blank=False, decimal_places = 2, max_digits = 5)
     horas_banheiro = models.IntegerField(null=False, blank=False)
     valor_banheiro = models.DecimalField(null=False, blank=False, decimal_places = 2, max_digits = 5)
-    valor_cozinha = models.DecimalField(null=False, blank=False, decimal_places = 2, max_digits = 5)
     horas_cozinha = models.IntegerField(null=False, blank=False)
+    valor_cozinha = models.DecimalField(null=False, blank=False, decimal_places = 2, max_digits = 5)   
     horas_outros = models.IntegerField(null=False, blank=False)
     valor_outros = models.DecimalField(null=False, blank=False, decimal_places = 2, max_digits = 5)
     icone = models.CharField(null=False, blank=False, choices=ICONE_CHOICES, max_length=14)
     posicao = models.IntegerField(null=False)
-    
+    horas_quintal = models.IntegerField(null=False, blank=False)
+    valor_quintal = models.DecimalField(null=False, blank=False, decimal_places = 2, max_digits = 5)
     
 
     
