@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import environ
+import os
+
 
 env = environ.Env()
 
@@ -38,7 +40,7 @@ SECRET_KEY = env('SECRET_KEY')
 #APOS ALTERAÇÃO POR DANIEL
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 #libera para todas aplicacoes fazer requisicoes na api
 CORS_ALLOW_ALL_ORIGINS = True  
@@ -59,8 +61,11 @@ INSTALLED_APPS = [
     'bootstrap4',
     'localflavor',
     'api',
-    'rest_framework', #pacote instalado na parte II do curso
-    'rest_framework_simplejwt.token_blacklist'
+    #pacote instalado na parte II do curso
+    'rest_framework', 
+    #'django_rest_passwordreset',
+    'rest_framework_simplejwt.token_blacklist',
+    
     
 ]
 
@@ -102,35 +107,35 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "ROTATE_REFRESH_TOKENS": True,
-    "BLACKLIST_AFTER_ROTATION": True,
-    "UPDATE_LAST_LOGIN": False,
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
 
-    "ALGORITHM": "HS256",
-    "SIGNING_KEY": SECRET_KEY,
-    "VERIFYING_KEY": "",
-    "AUDIENCE": None,
-    "ISSUER": None,
-    "JSON_ENCODER": None,
-    "JWK_URL": None,
-    "LEEWAY": 0,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': '',
+    'AUDIENCE': None,
+    'ISSUER': None,
+    'JSON_ENCODER': None,
+    'JWK_URL': None,
+    'LEEWAY': 0,
 
-    "AUTH_HEADER_TYPES": ("Bearer",),
-    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
-    "USER_ID_FIELD": "id",
-    "USER_ID_CLAIM": "user_id",
-    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
 
-    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-    "TOKEN_TYPE_CLAIM": "token_type",
-    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
 
-    "JTI_CLAIM": "jti",
+    #'JTI_CLAIM': "jti",
 
-    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
-    "SLIDING_TOKEN_LIFETIME": timedelta(seconds=30),
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 
     }
@@ -142,6 +147,7 @@ WSGI_APPLICATION = 'ediaristas.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+
 #ALTERADO POR DANIEL
 
 #APOS ALTERAÇÃO POR DANIEL
@@ -150,26 +156,19 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         #ALTERADO DANIEL
-        #'NAME': 'ediaristas',
-        'NAME': env('DATABASE_NAME'),
-        #'HOST': 'localhost',
-        'HOST': env('DATABASE_HOST'),
+        'NAME': 'ediaristas',
+        #'NAME': env('DATABASE_NAME'),
+        'HOST': 'localhost',
+        #'HOST': env('DATABASE_HOST'),
         'PORT': 3306,
-        #'USER': 'root',
-        'USER': env('DATABASE_USER'),
-        #'PASSWORD': '123456'
-        'PASSWORD': env('DATABASE_PASSWORD'),
+        'USER': 'root',
+        #'USER': env('DATABASE_USER'),
+        'PASSWORD': '123456',
+        #'PASSWORD': env('DATABASE_PASSWORD'),
     }
 }
 
-#configurando para envio de email por daniel
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.mailgun.org'
-EMAIL_PORT = 587
-#EMAIL_HOST_USER = 'postmaster@sandbox871d7552a02c4e74a8a2c34b4d99f637.mailgun.org'
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-#EMAIL_HOST_PASSWORD = '58d73a8e86f526834c525fcb324f79f2-ca9eeb88-b20d2f5f'
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
 
 EMAIL_USE_TLS = True
 
@@ -211,7 +210,7 @@ USE_THOUSAND_SEPARATOR = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = 'listar_servicos'
 
@@ -225,3 +224,7 @@ LOGIN_URL = 'logar_usuario'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'api.Usuario'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATIC_URL = '/static/'

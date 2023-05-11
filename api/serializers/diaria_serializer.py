@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import serializers
 from ..models import Diaria, Usuario
 from administracao.services import servico_service
@@ -17,8 +18,9 @@ class UsuarioDiariaSerilizer(serializers.ModelSerializer):
 
 class DiariaSerializer(serializers.ModelSerializer):
     cliente = UsuarioDiariaSerilizer(read_only=True)
-    valor_comissao = serializers.DecimalField(read_only=True, decimal_places=2, max_digits=5)
+    valor_comissao = serializers.DecimalField(read_only=True, max_digits=5, decimal_places=2)
     links = serializers.SerializerMethodField(required=False)
+    
     class Meta:
         model = Diaria
         fields = '__all__'
@@ -30,10 +32,16 @@ class DiariaSerializer(serializers.ModelSerializer):
         cliente_id=self.context['request'].user.id,
         **validated_data)
         return diaria
-
+    
+    
     def validate(self, attrs):
         if not verificar_disponibilidade_cidade(attrs['cep']):
             raise serializers.ValidationError("Não há diaristas para o CEP informado")
+        qtd_comodos = attrs['quantidade_quartos'] + attrs['quantidade_salas'] + \
+            attrs['quantidade_cozinhas'] + attrs['quantidade_banheiros'] + \
+            attrs['quantidade_outros']
+        if qtd_comodos == 0:
+            raise serializers.ValidationError("A diária deve ter, ao menos, 1 cômodo")
         return attrs
 
     def validate_codigo_ibge(self, codigo_ibge):
@@ -77,6 +85,9 @@ class DiariaSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Horário de inicio não pode ser menor que 6")
         if (data_atendimento.hour + self.initial_data["tempo_atendimento"]) > 22:
             raise serializers.ValidationError("O hoaário de atendimento não pode passar das 22:00")
+        if data_atendimento <= (timezone.now() + timezone.timedelta(hours=48)):
+            raise serializers.ValidationError("A data de atendimento não pode ser menor \
+que 48h antes da data atual")        
         return data_atendimento
 
     def get_links(self, obj):
@@ -86,6 +97,13 @@ class DiariaSerializer(serializers.ModelSerializer):
             if usuario.tipo_usuario == 1:
                 links.add_post('pagar_diaria', reverse('pagamento-diaria-list',
                 kwargs={'diaria_id': obj.id}))
+        elif obj.status == 2:
+            links.add_get('salf', reverse('diaria-detail',  kwargs={'diaria_id': obj.id}))
+            if usuario.tipo_usuario == 2:
+                links.add_post('candidatar_diaria',
+                reverse('candidatar-diarista-diaria-list', kwargs={'diaria_id': obj.id}))
+        else:
+            links.add_get('self', reverse('diaria-detail', kwargs={'diaria_id': obj.id}))
         return links.to_array()
 
 

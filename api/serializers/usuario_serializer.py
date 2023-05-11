@@ -1,12 +1,13 @@
+from django.urls import reverse
+from ..models import Usuario
+from ..hateoas import Hateoas
+
 from datetime import date
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from ..services import usuario_service
-from django.urls import reverse
 
-from ..models import Usuario
-from ..hateoas import Hateoas
 
 class UsuarioSerializer(serializers.ModelSerializer):
     chave_pix = serializers.CharField(required=False)
@@ -48,8 +49,13 @@ class UsuarioSerializer(serializers.ModelSerializer):
     def get_links(self, user):
         usuario = usuario_service.listar_usuario_email(user.email)
         links = Hateoas()
+        links.add_get('lista_diarias', reverse('diaria-list'))        
         if usuario.tipo_usuario == 1:
             links.add_post('cadastrar_diaria', reverse('diaria-list'))
+        else:
+            links.add_put('cadastrar_endereco', reverse('endereco-diarista-detail'))
+            links.add_put('relacionar_cidades', reverse('cidades-atendimento-diarista-detail'))
+            links.add_get('lista_oportunidades', reverse('oportunidade-list'))
         return links.to_array()
     
     def validate_password(self, password):
@@ -70,7 +76,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
         return nascimento
 
    
-    """sobrescrita do metodo create """
     def create(self, validated_data):
         validated_data['password'] = make_password(
             validated_data.get('password')

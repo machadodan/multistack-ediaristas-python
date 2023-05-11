@@ -21,7 +21,7 @@ class Hateoas:
         self.links.append({
             'type': type,
             'rel': rel,
-            'uri': uri
+            'uri': uri,
 
         })
         

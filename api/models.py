@@ -5,7 +5,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import validate_image_file_extension
 from localflavor.br.models import BRCPFField
-from .manager import diarista_manager
+from .managers import diarista_manager, diaria_manager
 from django.contrib.auth.models import UserManager
 from administracao.models import Servico
 
@@ -14,16 +14,15 @@ from administracao.models import Servico
 
 def nome_arquivo_foto(instance, filename):
     ext = filename.split('.')[-1]
-    filename = '%s%s' % (uuid.uuid4(), ext)
-    
+    filename = '%s.%s' % (uuid.uuid4(), ext)
+
     return os.path.join('usuarios', filename)
 
 def nome_arquivo_documento(instance, filename):
     ext = filename.split('.')[-1]
-    filename = '%s%s' % (uuid.uuid4(), ext)
-    
-    return os.path.join('documento', filename)
+    filename = '%s.%s' % (uuid.uuid4(), ext)
 
+    return os.path.join('documentos', filename)
 
 class Usuario(AbstractUser):
     TIPO_USUARIO_CHOICES = (
@@ -50,6 +49,18 @@ class Usuario(AbstractUser):
 
     object = UserManager()
     diarista_objects = diarista_manager.DiaristaManager()
+
+class EnderecoDiarista(models.Model):
+    logradouro = models.CharField(max_length=60, null=True, blank=False)
+    numero = models.CharField(max_length=10, null=True)
+    bairro = models.CharField(max_length=30, null=False, blank=False)
+    complemento =  models.CharField(max_length=100, null=True, blank=True)
+    cep = models.CharField(max_length=10, null=False, blank=False)
+    cidade =  models.CharField(max_length=30, null=False, blank=False)
+    estado = models.CharField(max_length=2, null=False, blank=False)
+    usuario = models.OneToOneField(Usuario, on_delete=models.DO_NOTHING, null=False, 
+    blank=False, related_name='endereco') 
+
 
 class Diaria(models.Model):
     STATUS_DIARIA_CHOICES = (
@@ -95,9 +106,10 @@ class Diaria(models.Model):
     candidatas = models.ManyToManyField(Usuario, blank=True, related_name='candidatas')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)   
+
+    objects = models.Manager()
+    diaria_objects = diaria_manager.DiariaManager()
     
-
-
 
 class CidadesAtendimento(models.Model):
     codigo_ibge = models.IntegerField(null=False, blank=False)
@@ -113,4 +125,6 @@ class Pagamento(models.Model):
     diaria = models.ForeignKey(Diaria, null=False, blank=False, on_delete=models.DO_NOTHING)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
+
+
 

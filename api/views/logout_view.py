@@ -9,9 +9,9 @@ class Logout(APIView):
     permission_classes = [permissions.IsAuthenticated,]
 
     def post(self, request):
-        try:
-            refresh_token = request.data["refresh"]
-            token = RefreshToken(refresh_token)
+        try:           
+            refresh_token = request.data["refresh"] 
+            token = RefreshToken(refresh_token)                             
             token.blacklist()
             return Response(status=status_http.HTTP_205_RESET_CONTENT)
         except Exception as e:

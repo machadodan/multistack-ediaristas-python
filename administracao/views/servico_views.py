@@ -12,7 +12,7 @@ def cadastrar_servico(request):
             return redirect('listar_servicos')
     else:
         form_servico = ServicoForm()
-    return render(request, 'servicos/form_servico.html', {"form_servico": form_servico})
+    return render(request, 'servicos/form_servico.html', {'form_servico': form_servico})
 
 @login_required
 def listar_servicos(request):
@@ -26,4 +26,4 @@ def editar_servico(request, id):
     if form_servico.is_valid():
         form_servico.save()
         return redirect('listar_servicos')
-    return render(request, 'servicos/form_servico.html', {"form_servico": form_servico})
+    return render(request, 'servicos/form_servico.html', {'form_servico': form_servico})
