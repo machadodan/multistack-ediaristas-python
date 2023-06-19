@@ -1,15 +1,18 @@
 from django.urls import path
 from django.urls.base import reverse_lazy
-from .views import servico_views, usuario_views
+from .views import diaria_view, servico_view, usuario_view
 from django.contrib.auth import views as auth_views
 
-urlpatterns = [   
-    path('servicos/cadastrar', servico_views.cadastrar_servico, name='cadastrar_servico'),
-    path('servicos/listar', servico_views.listar_servicos, name='listar_servicos'),
-    path('servicos/editar/<int:id>', servico_views.editar_servico, name='editar_servico'),
-    path('usuarios/cadastrar', usuario_views.cadastrar_usuario, name='cadastrar_usuario'),
-    path('usuarios/listar', usuario_views.listar_usuarios, name='listar_usuarios'),
-    path('usuarios/editar/<int:id>', usuario_views.editar_usuario, name='editar_usuario'),
+urlpatterns = [
+    path('diarias/listar', diaria_view.lista_diarias, name='listar_diarias'),   
+    path('diarias/<int:diaria_id>/transferir', diaria_view.transferir_pagamento_diaria,
+    name='transferir_pagamento'),
+    path('servicos/cadastrar', servico_view.cadastrar_servico, name='cadastrar_servico'),
+    path('servicos/listar', servico_view.listar_servicos, name='listar_servicos'),
+    path('servicos/editar/<int:id>', servico_view.editar_servico, name='editar_servico'),
+    path('usuarios/cadastrar', usuario_view.cadastrar_usuario, name='cadastrar_usuario'),
+    path('usuarios/listar', usuario_view.listar_usuarios, name='listar_usuarios'),
+    path('usuarios/editar/<int:id>', usuario_view.editar_usuario, name='editar_usuario'),
     path('autenticacao/login', auth_views.LoginView.as_view(), name='logar_usuario'),
     path('autenticacao/logout', auth_views.LogoutView.as_view(), name='deslogar_usuario'),
     path('alterar_senha', auth_views.PasswordChangeView.as_view(

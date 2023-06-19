@@ -9,8 +9,6 @@ class CandidatarDiaristaDiaria(APIView):
     permission_classes = [DiaristaPermission, ]
 
     def post(self, request, diaria_id, format=None):
-        # metodo para relacionar o diarista com a diaria
-        candidatar_diarista_diaria_service.relacionar_candidata_diaria(diaria_id, 
-        request.user.id)
+        candidatar_diarista_diaria_service.relacionar_candidata_diaria(diaria_id, request.user.id)
         return Response({"Candidatura realizada com sucesso"}, 
         status=status_http.HTTP_201_CREATED)

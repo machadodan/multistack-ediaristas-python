@@ -5,7 +5,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import validate_image_file_extension
 from localflavor.br.models import BRCPFField
-from .managers import diarista_manager, diaria_manager
+from .managers import diarista_manager, diaria_manager, avaliacao_manager
 from django.contrib.auth.models import UserManager
 from administracao.models import Servico
 
@@ -38,9 +38,9 @@ class Usuario(AbstractUser):
     tipo_usuario = models.IntegerField(choices=TIPO_USUARIO_CHOICES, null=True, blank=False)
     reputacao = models.FloatField(null=True, blank=False, default=5)
     chave_pix = models.CharField(null=True, blank=True, max_length=255)
-    foto_documento = models.ImageField(null=True, upload_to=nome_arquivo_foto,
+    foto_documento = models.ImageField(null=True, upload_to=nome_arquivo_documento,
     validators=[validate_image_file_extension,])
-    foto_usuario = models.ImageField(null=True, upload_to=nome_arquivo_documento,
+    foto_usuario = models.ImageField(null=True, upload_to=nome_arquivo_foto,
     validators=[validate_image_file_extension,])
 
     USERNAME_FIELD = 'email'
@@ -63,6 +63,7 @@ class EnderecoDiarista(models.Model):
 
 
 class Diaria(models.Model):
+    
     STATUS_DIARIA_CHOICES = (
         (1, "SEM_PAGAMENTO"),
         (2, "PAGO"),
@@ -72,7 +73,6 @@ class Diaria(models.Model):
         (6, "AVALIADO"),
         (7, "TRANSFERIDO")
     )
-
     data_atendimento = models.DateTimeField(null=False, blank=False)
     tempo_atendimento = models.IntegerField(null=False, blank=False)
     status = models.IntegerField(null=False, blank=False, choices=STATUS_DIARIA_CHOICES,
@@ -125,6 +125,27 @@ class Pagamento(models.Model):
     diaria = models.ForeignKey(Diaria, null=False, blank=False, on_delete=models.DO_NOTHING)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
+
+class AvaliacaoDiaria(models.Model):
+    descricao = models.TextField(null=False, blank=False)
+    nota = models.FloatField(null=False, blank=False)
+    visibilidade = models.IntegerField(null=False, blank=False)
+    diaria = models.ForeignKey(Diaria, null=False, blank=False, on_delete=models.CASCADE,
+    related_name='avaliacao_diaria')
+    avaliador = models.ForeignKey(Usuario, null=True, blank=False, on_delete=models.CASCADE,
+    related_name='avaliador')
+    avaliado = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE,
+    related_name='avaliado')
+
+    objects = models.Manager()
+    avaliacao_objects = avaliacao_manager.AvaliacaoManager()
+
+
+
+
+
+
+
 
 
 

@@ -22,10 +22,10 @@ from api.views import logout_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('administracao/', include('administracao.urls')),
-    path('api/', include('api.urls')),
+    path('api/', include('api.urls')),    
     path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/logout/', logout_view.Logout.as_view(), name='logout'),
-    #path('recuperar-senha/', include('django_rest_passwordreset.urls',
-    #namespace='password_reset'), name='resetar_senha')
+    path('recuperar-senha/', include('django_rest_passwordreset.urls',
+    namespace='password_reset'), name='resetar_senha')
 ]

@@ -63,11 +63,16 @@ INSTALLED_APPS = [
     'api',
     #pacote instalado na parte II do curso
     'rest_framework', 
-    #'django_rest_passwordreset',
+    'django_rest_passwordreset',
     'rest_framework_simplejwt.token_blacklist',
-    
-    
+    'django_q',      
 ]
+Q_CLUSTER = {
+    'retry': 10,
+    'workers': 4,
+    'timeout': 5,
+    'orm': 'default',
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -168,9 +173,16 @@ DATABASES = {
     }
 }
 
-
-
+#configurando para envio de email por daniel
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "projetostreinaweb@gmail.com"
+#EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
+
+DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE = True
 
 
 # Password validation
