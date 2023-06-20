@@ -179,6 +179,11 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "projetostreinaweb@gmail.com"
+EMAIL_HOST_PASSWORD = 'fucszaqornjgsbum'
+#EMAIL_HOST_PASSWORD = 'fucszaqornjgsbum'
+#EMAIL_HOST_USER = 'postmaster@sandbox871d7552a02c4e74a8a2c34b4d99f637.mailgun.org'
+#EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+#EMAIL_HOST_PASSWORD = '58d73a8e86f526834c525fcb324f79f2-ca9eeb88-b20d2f5f'
 #EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 

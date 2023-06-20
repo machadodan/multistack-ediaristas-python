@@ -16,7 +16,7 @@ def nome_arquivo_foto(instance, filename):
     ext = filename.split('.')[-1]
     filename = '%s.%s' % (uuid.uuid4(), ext)
 
-    return os.path.join('usuarios', filename)
+    return os.path.join('usuarios/foto', filename)
 
 def nome_arquivo_documento(instance, filename):
     ext = filename.split('.')[-1]
