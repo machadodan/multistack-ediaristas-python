@@ -40,7 +40,7 @@ SECRET_KEY = env('SECRET_KEY')
 #APOS ALTERAÇÃO POR DANIEL
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['multistack-ediaristas-python-81d02b6ab90a.herokuapp.com/', '127.0.0.1', 'localhost']
 
 #libera para todas aplicacoes fazer requisicoes na api
 CORS_ALLOW_ALL_ORIGINS = True  
